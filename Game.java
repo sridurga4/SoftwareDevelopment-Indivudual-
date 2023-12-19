@@ -1,92 +1,272 @@
-public class Game {
-    private final SimpleGameContext gameContext;
-    private int questionNumber = 1;
-    private static final String[] QUESTIONS = {
-            "Is it responsible for how one class communicates with others?",
-            "Does it provide the object creation mechanism that enhances the flexibilities of the existing code?",
-            "Does it explain how to assemble objects and classes into a larger structure and simplifies the structure by identifying the relationships?",
-            // Add more questions as needed
-    };
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-    public Game(SimpleGameContext gameContext) {
-        this.gameContext = gameContext;
+public class Game {
+
+    private final GameContext context;
+
+    public Game(GameContext context) {
+        this.context = context;
     }
 
     public void start() {
-        gameContext.showQuestion("Welcome to the Design Pattern Guessing Game! " +
-                "Think of a design pattern and answer the following yes/no questions. " +
-                "Ready?");
-        askQuestion();
-    }
-
-    private void askQuestion() {
-        if (questionNumber <= QUESTIONS.length) {
-            gameContext.showQuestion(QUESTIONS[questionNumber - 1]);
-            questionNumber++;
-        } else {
-            showGameResult();
-        }
+        context.showQuestion("Welcome to the game! Think of a design pattern and answer the following yes/no questions. Ready?");
     }
 
     public void answerYes() {
-        if (!isGameOver()) {
-            gameContext.showQuestion("You answered YES. Continue?");
-            String userAnswer = gameContext.getUserInput();
-
-            // Implement logic to ask the next question based on user's answer
-            if (userAnswer.equals("yes")) {
-                askQuestion();
-            } else if (userAnswer.equals("no")) {
-                showGameResult();
-            } else {
-                showTryAgain();
-            }
-        }
+        context.showQuestion("You answered YES. Continue?");
     }
 
     public void answerNo() {
-        if (!isGameOver()) {
-            showGameResult();
-        }
+        context.endGame();
     }
 
-    private void showGameResult() {
-        if (questionNumber <= QUESTIONS.length) {
-            gameContext.showQuestion("Game Over. Thanks for playing!");
-        } else {
-            gameContext.showAnswer("The answer is: " + getDesignPattern());
-            gameContext.endGame();
-        }
+    public String readAnswer() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        return reader.readLine();
     }
 
-    private String getDesignPattern() {
-        // Replace this with your actual logic to determine the design pattern
-        return "Strategy"; // Placeholder, replace with actual result
-    }
-
-    private void showTryAgain() {
-        gameContext.showTryAgain();
-    }
-
-    private boolean isGameOver() {
-        return questionNumber > QUESTIONS.length;
-    }
-
-    public static void main(String[] args) {
-        SimpleGameContext gameContext = new SimpleGameContext();
-        Game game = new Game(gameContext);
+    public static void mainLogic() throws IOException {
+        GameContext context = new ConsoleGameContext();
+        Game game = new Game(context);
         game.start();
-
-        while (true) {
-            String userAnswer = gameContext.getUserInput();
-
-            if (userAnswer.equals("yes")) {
+        if(game.readAnswer().equalsIgnoreCase("yes")){
+            game.answerYes();
+            context.showQuestion("Does it provide the object creation mechanism that enhances the flexibility of the existing code?");
+            if(game.readAnswer().equalsIgnoreCase("yes")){
                 game.answerYes();
-            } else if (userAnswer.equals("no")) {
-                game.answerNo();
-            } else {
-                game.showTryAgain();
+                context.showQuestion("Does it ensure you have at most one instance of a class in your application?");
+                if(game.readAnswer().equalsIgnoreCase("yes")){
+                    game.answerYes();
+                    context.showQuestion("is it a singleton pattern");
+                    if(game.readAnswer().equalsIgnoreCase("yes")){
+                        game.answerYes();
+                        context.showQuestion("wohooo!! guessed it! try again");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            mainLogic();
+                        }
+
+                        else
+                            context.endGame();
+                    }
+                    else{
+                        context.showQuestion("oops!! something went wrong try again");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            mainLogic();
+                        }
+                        else
+                            context.endGame();
+                    }
+                }
+                else {
+                    context.showQuestion("is it a builder pattern");
+                    if(game.readAnswer().equalsIgnoreCase("yes")){
+                        context.showQuestion("wohooo!! guessed it! try again");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            mainLogic();
+                        }
+                        else
+                            context.endGame();
+
+                    }
+                    else{
+                        context.showQuestion("oops!! something went wrong try again");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            mainLogic();
+                        }
+                        else
+                            context.endGame();
+
+                    }
+                }
+            }
+            else {
+                context.showQuestion("is it responsible for how one class communicates with other");
+                if (game.readAnswer().equalsIgnoreCase("yes")) {
+                    game.answerYes();
+                    context.showQuestion("does it provide a mechanism to the context to change its behavior");
+                    if (game.readAnswer().equalsIgnoreCase("yes")){
+                        game.answerYes();
+                        context.showQuestion("is changing behaviour built into its schema");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            context.showQuestion("is it a state pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+
+                                }
+                                else
+                                    context.endGame();
+                            }
+                        }
+                        else{
+                            context.showQuestion("is it a strategy pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+                            }
+                        }
+                    }
+                    else{
+                        context.showQuestion("does it allow a group of objects to be notified when some state changes");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            context.showQuestion("is it a observer pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+
+                            }
+                        }
+                        else{
+                            context.showQuestion("is it a command pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+
+                            }
+                        }
+
+                    }
+                }
+                else{
+                    context.showQuestion("does it explain how to assemble objects and classes into a larger...");
+                    if(game.readAnswer().equalsIgnoreCase("yes")){
+                        game.answerYes();
+                        context.showQuestion("does it attach additional behaviour to an object dynamically at run time");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            context.showQuestion("is it a decorator pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes"))
+                                    mainLogic();
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+                            }
+                        }
+                        else{
+                            context.showQuestion("is it a adapter pattern");
+                            if(game.readAnswer().equalsIgnoreCase("yes")){
+                                game.answerYes();
+                                context.showQuestion("wohooo!! guessed it! try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+                            }
+                            else{
+                                context.showQuestion("oops!! something went wrong try again");
+                                if(game.readAnswer().equalsIgnoreCase("yes")){
+                                    game.answerYes();
+                                    mainLogic();
+                                }
+                                else
+                                    context.endGame();
+
+                            }
+                        }
+                    }
+                    else{
+                        context.showQuestion("oops!! something went wrong try again");
+                        if(game.readAnswer().equalsIgnoreCase("yes")){
+                            game.answerYes();
+                            mainLogic();
+                        }
+                        else
+                            context.endGame();
+
+                    }
+
+                }
+
             }
         }
+
+        else{
+            context.endGame();
+        }
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        mainLogic();
     }
 }
